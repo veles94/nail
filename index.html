@@ -578,5 +578,9 @@ window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.
 const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }), {threshold:.12});
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 </script>
+  <script type="module">
+  import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics@1.1.1/+esm';
+  inject();
+</script>
 </body>
 </html>
