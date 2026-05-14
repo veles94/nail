@@ -1,27 +1,21 @@
 export default async function handler(req, res) {
-  const url = 'https://www.instagram.com/nailroom.ottawa/?__a=1&__d=dis';
+  const cloud = 'dkaekr0ou';
 
   try {
-    const r = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0'
-      }
-    });
+    const r = await fetch(
+      `https://res.cloudinary.com/${cloud}/image/list/gallery.json`
+    );
+    const data = await r.json();
 
-    const j = await r.json();
-
-    const edges =
-      j.graphql?.user?.edge_owner_to_timeline_media?.edges || [];
-
-    const items = edges.map(e => ({
-      image: e.node.display_url,
-      link: 'https://www.instagram.com/p/' + e.node.shortcode + '/'
-    })).slice(0, 4);
+    const items = (data.resources || []).slice(0, 4).map(img => ({
+      image: `https://res.cloudinary.com/${cloud}/image/upload/c_fill,w_600,h_600,g_auto/${img.public_id}.jpg`,
+      link: 'https://www.instagram.com/nailroom.ottawa/'
+    }));
 
     res.setHeader('Cache-Control', 's-maxage=3600');
     res.status(200).json({ items });
-
-  } catch {
+  } catch (e) {
+    console.error('Cloudinary error:', e.message);
     res.status(200).json({ items: [] });
   }
 }
